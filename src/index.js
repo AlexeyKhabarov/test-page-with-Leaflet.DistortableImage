@@ -12,12 +12,11 @@ import "leaflet-distortableimage/dist/vendor.js";
 /*eslint no-undef: "off"*/
 const map = L.map("app", {
   center: [50.0, 10.0],
-  zoom: 3
+  zoom: 3,
 });
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution:
-    '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  attribution: '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
 const onFileLoad = (event, callback) => {
@@ -31,10 +30,19 @@ const onFileLoad = (event, callback) => {
   reader.readAsDataURL(input.files[0]);
 };
 
-document
-  .getElementById("input-img-upload")
-  .addEventListener("change", (event) => {
-    onFileLoad(event, (url) => {
-      L.distortableImageOverlay(url).addTo(map);
-    });
+let imageLayer = null;
+
+document.getElementById("input-img-upload").addEventListener("change", (event) => {
+  onFileLoad(event, (url) => {
+    imageLayer = L.distortableImageOverlay(url).addTo(map);
   });
+});
+
+document.getElementById("toggle").addEventListener("click", () => {
+  console.log("click");
+  if (imageLayer.isSelected()) {
+    imageLayer.deselect();
+  } else {
+    imageLayer.select();
+  }
+});
